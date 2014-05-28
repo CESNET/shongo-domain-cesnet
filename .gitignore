@@ -1,4 +1,5 @@
 *.iml
-target
-shongo-connector-test/.jade
-shongo-connector-test/log
+.jade/
+log/
+servers/
+target/
