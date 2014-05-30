@@ -13,7 +13,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * TODO:
+ * Debugging tests.
  *
  * @author Martin Srom <martin.srom@cesnet.cz>
  */

@@ -1,11 +1,9 @@
-build: style.css
+build: design.css
 
-style.css: .FORCE
-	lessc less/style.less css/style.css
-	#yui-compressor css/style.css > css/style.min.css
+design.css: .FORCE
+	lessc less/design.less css/design.css
 
 clean:
-	rm -f css/style.css
-	rm -f css/style.min.css
+	rm -f css/design.css
 
 .FORCE:

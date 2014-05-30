@@ -100,7 +100,10 @@
 
             <!-- Application name -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="${url.home}">${message("app.name")}</a>
+                <a class="navbar-brand" href="${url.home}">
+                    ${message("app.name")}
+                    <#if configuration["testing"]?? && configuration["testing"]>(TEST)</#if>
+                </a>
 
                 <!-- Collapsed menu -->
                 <button type="button" data-toggle="collapse" data-target=".navbar-collapse" class="navbar-toggle pull-left" style="padding-top: 4px; padding-bottom: 4px;">
