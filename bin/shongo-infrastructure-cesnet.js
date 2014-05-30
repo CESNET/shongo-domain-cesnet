@@ -255,7 +255,17 @@ if (common.hasArgument(1) && common.getArgument(1) == "--debug") {
 var domain = common.getArgument(0);
 var domainUrl = DOMAINS[domain];
 var administrator = {email: "srom.martin@gmail.com"};
-if (domainUrl == null) {
+if (domainUrl != null) {
+    var retrieveTokenCommand = "ssh " + domainUrl + " -l root \"cat /app/shongo/shongo-deployment/root.access-token\"";
+    common.Configuration.controllerUrl = domainUrl;
+    common.Configuration.controllerSsl = true;
+    common.Configuration.controllerToken = common.exec(retrieveTokenCommand);
+    if (common.Configuration.controllerToken == "") {
+        throw "Security token for " + domainUrl + " cannot be retrieved by cmd:\n" + retrieveTokenCommand + "";
+    }
+    console.log("Using '" + common.Configuration.controllerToken + "' as security token.");
+}
+else {
     if (domain.substring(0, 5) == "user:") {
         domain = domain.substring(5);
         console.log("Using user '" + domain + "' as resource administrator.");
