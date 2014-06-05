@@ -48,7 +48,7 @@ function getResources(domain, defaultAdministrator) {
         "default": "YY-"
     });
     // Maximum Future
-    var maximumFuture = "P4Y";
+    var maximumFuture = "P2Y";
 
     // Naming service
     resources.push({

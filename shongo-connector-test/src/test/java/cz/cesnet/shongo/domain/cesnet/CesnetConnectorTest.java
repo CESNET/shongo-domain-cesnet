@@ -3,12 +3,16 @@ package cz.cesnet.shongo.domain.cesnet;
 import cz.cesnet.shongo.AliasType;
 import cz.cesnet.shongo.Technology;
 import cz.cesnet.shongo.api.*;
+import cz.cesnet.shongo.api.jade.Command;
 import cz.cesnet.shongo.connector.api.RecordingSettings;
 import cz.cesnet.shongo.connector.api.jade.multipoint.CreateRoom;
 import cz.cesnet.shongo.connector.api.jade.multipoint.DeleteRoom;
 import cz.cesnet.shongo.connector.api.jade.multipoint.GetRoom;
 import cz.cesnet.shongo.connector.api.jade.recording.*;
 import cz.cesnet.shongo.connector.test.AbstractConnectorTest;
+import cz.cesnet.shongo.controller.ControllerReportSet;
+import cz.cesnet.shongo.controller.api.jade.GetUserInformation;
+import jade.core.AID;
 import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -174,8 +178,11 @@ public class CesnetConnectorTest extends AbstractConnectorTest
             dump(roomId);
 
             // Create recording folder
+            Map<String, RecordingFolder.UserPermission> recordingFolderPermissions =
+                    new HashMap<String, RecordingFolder.UserPermission>();
+            recordingFolderPermissions.put("3859", RecordingFolder.UserPermission.READ);
             recordingFolderId = performCommand(tcs,
-                    new CreateRecordingFolder(new RecordingFolder(RECORDING_FOLDER_NAME)));
+                    new CreateRecordingFolder(new RecordingFolder(RECORDING_FOLDER_NAME, recordingFolderPermissions)));
             Assert.assertNotNull(recordingFolderId);
             dump(recordingFolderId);
 
@@ -291,5 +298,27 @@ public class CesnetConnectorTest extends AbstractConnectorTest
                 throw new Exception("Waiting for recording " + recordingId + " state " + state + " expired.");
             }
         }
+    }
+
+    @Override
+    protected Object handleControllerCommand(Command command, AID sender)
+    {
+        if (command instanceof GetUserInformation) {
+            GetUserInformation getUserInformation = (GetUserInformation) command;
+            String userId = getUserInformation.getUserId();
+            if (userId.equals("3859")) {
+                UserInformation userInformation = new UserInformation();
+                userInformation.setUserId(userId);
+                userInformation.setFirstName("Martin");
+                userInformation.setLastName("Šrom");
+                userInformation.setEmail("martin.srom@cesnet.cz");
+                userInformation.addPrincipalName("srom@cesnet.cz");
+                return userInformation;
+            }
+            else {
+                throw new ControllerReportSet.UserNotExistsException(userId);
+            }
+        }
+        return super.handleControllerCommand(command, sender);
     }
 }
