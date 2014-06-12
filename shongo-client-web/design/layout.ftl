@@ -23,8 +23,8 @@
     <div id="cesnet_linker_placeholder"
          <#if !user??>data-login-href="/login"</#if>
          data-lang="${session.locale.language}"
-         data-lang-cs-href="?lang=cs"
-         data-lang-en-href="?lang=en">
+         data-lang-cs-href="${url.languageCs}"
+         data-lang-en-href="${url.languageEn}">
     </div>
     <!-- CESNET's linker: end -->
 
@@ -50,9 +50,9 @@
                         <a style="margin-top: 5px;" class="dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-cog"></i>
                             <b>${user.name}</b>
-                            <#if user.administratorMode>
-                                <!-- Administrator -->
-                                (${message("user.administrator")})
+                            <#if user.administrationMode>
+                                <!-- Administration -->
+                                (${message("user.administration")})
                             </#if>
                             <b class="caret"></b>
                             <#if !user.reservationAvailable>
@@ -80,10 +80,10 @@
                                     <#if user.advancedMode><i class="fa fa-check"></i></#if>${message("user.settingsAdvancedMode")}
                                 </a>
                             </li>
-                            <#if user.administratorModeAvailable>
+                            <#if user.administrationModeAvailable>
                                 <li>
-                                    <a class="menuitem" href="${url.userSettingsAdministratorMode(!user.administratorMode)}">
-                                        <#if user.administratorMode><i class="fa fa-check"></i></#if>${message("user.settingsAdministratorMode")}
+                                    <a class="menuitem" href="${url.userSettingsAdministrationMode(!user.administrationMode)}">
+                                        <#if user.administrationMode><i class="fa fa-check"></i></#if>${message("user.settingsAdministrationMode")}
                                     </a>
                                 </li>
                             </#if>
@@ -122,7 +122,20 @@
             <div class="collapse navbar-collapse navbar-left">
                 <ul class="nav navbar-nav">
                 <#list links as link>
-                    <li><a href="${link.url}">${link.title}</a></li>
+                    <#if link.hasChildLinks()>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                ${link.title}<b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+                            <#list link.childLinks as childLink>
+                                <li><a href="${childLink.url}">${childLink.title}</a></li>
+                            </#list>
+                            </ul>
+                        </li>
+                    <#else>
+                        <li><a href="${link.url}">${link.title}</a></li>
+                    </#if>
                 </#list>
                 </ul>
             </div>
@@ -140,7 +153,11 @@
                 <#list breadcrumbs as breadcrumb>
                     <#if breadcrumb_has_next>
                         <li>
-                            <a href="${breadcrumb.url}">${breadcrumb.title}</a>
+                            <#if breadcrumb.url??>
+                                <a href="${breadcrumb.url}">${breadcrumb.title}</a>
+                            <#else>
+                                ${breadcrumb.title}
+                            </#if>
                         </li>
                     <#else>
                         <li class="active">${breadcrumb.title}</li>
