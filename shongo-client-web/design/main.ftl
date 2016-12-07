@@ -10,7 +10,7 @@
         <p><strong>${message("main.maintenance")}</strong></p>
     <#else>
         <#if !user??>
-            <p><strong>${message("main.login", url.login)}</strong> (${message("main.firstHelp", "https://vidcon.cesnet.cz/_media/meetings/jak-zacit-shongo.pdf")}).</p>
+            <p><strong>${message("main.login", url.login)}</strong> (${message("main.firstHelp", "https://vidcon.cesnet.cz/_media/cs/meetings/jak-zacit-shongo.pdf")}).</p>
         </#if>
     </#if>
 </#if>
