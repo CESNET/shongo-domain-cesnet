@@ -235,7 +235,7 @@ console.info("+----------------------------------+");
 
 // Check first argument and print help if it doesn't exist
 if (!common.hasArgument(0)) {
-    console.error("usage: " + common.getBin() + " <domain|administrator-email>");
+    console.error("usage: " + common.getBin() + " <domain|administrator-email> [<security-token>] [<url>]");
     console.error("\n  <domain> can have the following values:");
     for (var domain in DOMAINS) {
         var domainUrl = DOMAINS[domain];
@@ -253,13 +253,21 @@ if (common.hasArgument(1) && common.getArgument(1) == "--debug") {
 
 // Get domain, url, email and resources
 var domain = common.getArgument(0);
+var token = common.getArgument(1);
 var domainUrl = DOMAINS[domain];
-var administrator = {email: "srom.martin@gmail.com"};
+var administrator = {email: "pavelka@cesnet.cz"};
+var localUrl = common.getArgument(2);
+
 if (domainUrl != null) {
-    var retrieveTokenCommand = "ssh " + domainUrl + " -l root \"cat /app/shongo/shongo-deployment/root.access-token\"";
+    if (token != null && token.indexOf("--token=") === 0) {
+      common.Configuration.controllerToken = token.replace("--token=","");
+    }
+		else {
+	    var retrieveTokenCommand = "ssh " + domainUrl + " -l root \"cat /app/shongo/shongo-deployment/root.access-token\"";
+	    common.Configuration.controllerToken = common.exec(retrieveTokenCommand);
+		}
     common.Configuration.controllerUrl = domainUrl;
     common.Configuration.controllerSsl = true;
-    common.Configuration.controllerToken = common.exec(retrieveTokenCommand);
     if (common.Configuration.controllerToken == "") {
         throw "Security token for " + domainUrl + " cannot be retrieved by cmd:\n" + retrieveTokenCommand + "";
     }
@@ -277,6 +285,15 @@ else {
     }
     domainUrl = "localhost";
     domain = "local"
+		if (localUrl != null) {
+				domainUrl = localUrl;
+		    common.Configuration.controllerUrl = domainUrl;
+	      common.Configuration.controllerToken = token;
+		    if (common.Configuration.controllerToken == "") {
+    		    throw "Security token for " + domainUrl + " cannot be retrieved by cmd:\n" + retrieveTokenCommand + "";
+		    }
+    		console.log("Using '" + common.Configuration.controllerToken + "' as security token.");
+		}
 }
 var resources = getResources(domain, administrator);
 
