@@ -150,6 +150,10 @@ h6,
   padding-top: 0px;
   margin-bottom: 0px;
 }
+.navbar-brand {
+  padding-top: 0px;
+  padding-right: 0px;
+}
 /* nav-lists */
 .nav-list > .active > a,
 .nav-list > .active > a:hover,

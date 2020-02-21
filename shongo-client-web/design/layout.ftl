@@ -101,8 +101,7 @@
             <!-- Application name -->
             <div class="navbar-header">
                 <a class="navbar-brand" href="${url.home}">
-                    ${message("app.name")}
-                    <#if configuration["testing"]?? && configuration["testing"]>(TEST)</#if>
+                    <img src="${url.resources}/img/meetings_RGB.png" class="img-responsive" alt="cesnet logo">
                 </a>
 
                 <!-- Collapsed menu -->
